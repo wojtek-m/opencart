@@ -14,7 +14,6 @@ class ControllerInstallStep4 extends Controller {
 		$data['text_extension'] = $this->language->get('text_extension');
 		$data['text_mail'] = $this->language->get('text_mail');
 		$data['text_mail_description'] = $this->language->get('text_mail_description');
-		$data['text_maxmind'] = $this->language->get('text_maxmind');
 		$data['text_facebook'] = $this->language->get('text_facebook');
 		$data['text_facebook_description'] = $this->language->get('text_facebook_description');
 		$data['text_facebook_visit'] = $this->language->get('text_facebook_visit');
@@ -42,8 +41,25 @@ class ControllerInstallStep4 extends Controller {
 			$data['success'] = '';
 		}
 
-		$data['maxmind'] = $this->url->link('3rd_party/maxmind');
-		$data['facebook'] = $this->url->link('3rd_party/facebook');
+		$curl = curl_init();
+
+		curl_setopt($curl, CURLOPT_POST, true);
+		curl_setopt($curl, CURLOPT_HEADER, false);
+		curl_setopt($curl, CURLOPT_URL, 'https://www.opencart.com/index.php?route=api/installer');
+		curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1');
+		curl_setopt($curl, CURLOPT_FRESH_CONNECT, true);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($curl, CURLOPT_FORBID_REUSE, true);
+		curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+		curl_setopt($curl, CURLOPT_POSTFIELDS, array());
+
+		$response = curl_exec($curl);
+
+		curl_close($curl);
+
+		$data['content'] = $response;
 
 		$data['footer'] = $this->load->controller('common/footer');
 		$data['header'] = $this->load->controller('common/header');
